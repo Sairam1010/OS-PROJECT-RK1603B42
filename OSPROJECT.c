@@ -9,12 +9,16 @@ struct process
     int id;
     int burstTime;
     struct process *link;
-}*start = NULL, *temp = NULL, *rear = NULL;
+}*start = NULL, *temp = NULL, *rear = NULL, *prev = NULL, *next = NULL, *chosen = NULL;
 int idT = 1;
+int nOfPr;
+int totalTime = 0;
 void enqueue()
 {
     temp = (struct process*) malloc(sizeof(struct process));
+    printf("\nEnter arrival time : ");
     scanf("%d", &(temp->arrivalTime));
+    printf("\nEnter burst time : ");
     scanf("%d", &(temp->burstTime));
     temp->priority = 0;
     temp->waitTime = 0;
@@ -41,23 +45,64 @@ void show()
     }
     else
     {
-        while(temp != NULL)\
+        while(temp != NULL)
         {
             printf("%d", temp->id);
             temp = temp->link;
         }
     }
 }
-/*void dequeue
+void find()
 {
-
-}*/
-int main()
+    temp = start;
+    chosen = start;
+    while (chosen->arrivalTime > totalTime)
+    {
+        chosen = chosen->link;
+    }
+    while (temp != NULL)
+        {
+            if ((temp->priority < chosen->priority) && (temp->arrivalTime >= totalTime))
+            {
+                chosen = temp;
+            }
+            temp = temp->link;
+        }
+}
+void findPriority()
 {
     int i;
-    for (i = 0;i < 3;i++)
+    temp = start;
+    for (i = 0;i < nOfPr;i++)
     {
-        show();
-        enqueue();
+        temp->priority = (1 + temp->waitTime) / temp->burstTime;
     }
+}
+void remove()
+{
+    if (chosen == start)
+    {
+        start = start = start->link;
+    }
+    else if (chosen != NULL)
+    {
+        prev = start;
+        while(prev ->link != chosen)
+        {
+            prev = prev->link;
+        }
+        prev->link = chosen->link;
+        chosen->link = NULL;
+    }
+}
+int main()
+{
+   printf("Enter no. of processes( > 1) : ");
+   scanf("%d",&nOfPr);
+   int i;
+   for (i = 0;i < nOfPr;i++)
+   {
+       enqueue();
+   }
+
 }
