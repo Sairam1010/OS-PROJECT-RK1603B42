@@ -10,9 +10,15 @@ struct process
     int burstTime;
     struct process *link;
 }*start = NULL, *temp = NULL, *rear = NULL, *prev = NULL, *next = NULL, *chosen = NULL;
-int idT = 1;
-int nOfPr;
-int totalTime = 0;
+
+//Variable to automatically assign ID to a process
+int idT = 1;   
+//Number Of Processes
+int nOfPr;      
+//Total Time collapsed
+int totalTime = 0;     
+
+//Function to add processes in the queue
 void enqueue()
 {
     temp = (struct process*) malloc(sizeof(struct process));
@@ -41,6 +47,7 @@ void enqueue()
         rear = rear->link;
     }
 }
+//Function to check if addition of processes in queue is working correctly
 void show()
 {
     temp = start;
@@ -57,6 +64,7 @@ void show()
         }
     }
 }
+//Function to find a process which is ready for execution and with top priority
 void find()
 {
     //printf("find");
@@ -81,6 +89,7 @@ void find()
         temp = temp->link;
     }
 }
+//Calculate the priorities of all processes
 void findPriority()
 {
     //printf("Prio");
@@ -92,9 +101,9 @@ void findPriority()
         temp = temp->link;
     }
 }
+//Remove a process once it has finished execution
 void removeProcess()
 {
-    //printf("Hey");
     if (chosen == start)
     {
         start = start = start->link;
@@ -110,6 +119,7 @@ void removeProcess()
         chosen->link = NULL;
     }
 }
+//Function to increase waiting time of all the processes that have arrived 
 void increaseWaiting(int cycles)
 {
     temp = start;
@@ -126,36 +136,46 @@ int main()
 {
    printf("Enter no. of processes( > 1) : ");
    scanf("%d",&nOfPr);
+   //Processes should always be greater than 1. Or else no sheduling is required
    if (nOfPr <= 1)
    {
        printf("No. of processes is less than 2");
+       //Exit if condition not met
        exit(0);
    }
    int i;
+   //Adding the processes
    for (i = 0;i < nOfPr;i++)
    {
        enqueue();
    }
+    //Keep executing until all processes have finished i.e. queue becomes empty
     while (start != NULL)
     {
-        //printf("Hi");
+        //Calculate priority at each step as priority is dynamic
         findPriority();
+        //Finding the process with top priority
         find();
-        //printf("Hii");
+        //If no process has arrived right now. Then increment total time and try searching for processes again.
         if (chosen == NULL)
         {
-            //printf("Hiii");
             totalTime++;
+            //Increase waiting time of all arrived processes by 1 cycle
             increaseWaiting(1);
         }
+        //If process found then execute it.
         else
         {
             int localBurst = chosen->burstTime;
             totalTime += chosen->burstTime;
             chosen->turnaround = totalTime - chosen->arrivalTime;
+            //Print to user the information about the process
             printf("\n\nProcess %d with \n\nWaiting time %d\n\nTurnaround time %d\n\nended at %d\n", chosen->id, chosen->waitTime,chosen->turnaround,totalTime);
+            //Remove the process
             removeProcess();
+            //Decrement the number of processes in the queue
             nOfPr--;
+            //Increase waiting time of all arrived processes by the burst time of executed process
             increaseWaiting(localBurst);
         }
     }
