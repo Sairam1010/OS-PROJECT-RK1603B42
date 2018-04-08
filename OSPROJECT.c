@@ -12,11 +12,11 @@ struct process
 }*start = NULL, *temp = NULL, *rear = NULL, *prev = NULL, *next = NULL, *chosen = NULL;
 
 //Variable to automatically assign ID to a process
-int idT = 1;   
+int idT = 1;
 //Number Of Processes
-int nOfPr;      
+int nOfPr;
 //Total Time collapsed
-int totalTime = 0;     
+int totalTime = 0;
 
 //Function to add processes in the queue
 void enqueue()
@@ -119,7 +119,7 @@ void removeProcess()
         chosen->link = NULL;
     }
 }
-//Function to increase waiting time of all the processes that have arrived 
+//Function to increase waiting time of all the processes that have arrived
 void increaseWaiting(int cycles)
 {
     temp = start;
@@ -134,8 +134,10 @@ void increaseWaiting(int cycles)
 }
 int main()
 {
+   float avgTurn = 0, avgWait = 0;
    printf("Enter no. of processes( > 1) : ");
    scanf("%d",&nOfPr);
+   int loc = nOfPr;
    //Processes should always be greater than 1. Or else no sheduling is required
    if (nOfPr <= 1)
    {
@@ -171,6 +173,8 @@ int main()
             chosen->turnaround = totalTime - chosen->arrivalTime;
             //Print to user the information about the process
             printf("\n\nProcess %d with \n\nWaiting time %d\n\nTurnaround time %d\n\nended at %d\n", chosen->id, chosen->waitTime,chosen->turnaround,totalTime);
+            avgTurn += chosen->turnaround;
+            avgWait += chosen->waitTime;
             //Remove the process
             removeProcess();
             //Decrement the number of processes in the queue
@@ -179,4 +183,7 @@ int main()
             increaseWaiting(localBurst);
         }
     }
+    avgTurn = avgTurn/loc;
+    avgWait = avgWait/loc;
+    printf("\nAverage turnaround time: %f \nAverage Waiting time: %f",avgTurn,avgWait);
 }
